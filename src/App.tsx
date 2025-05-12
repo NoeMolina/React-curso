@@ -16,47 +16,26 @@
   //     // manejar el estado de la memoria
   //   }
   // }, [])
-
-import { useEffect, useState } from "react";
 import "./App.css";
+import { useFetch } from "./hooks";
+const url = "https://api.example.com/data";
+//const url = "https://pokeapi.co/api/v2/pokemon/ditto";
+
+interface Data{
+  name: string;
+  lastName: string;
+  age: number;
+}
 
 function App() {
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  const {data, error, loading} = useFetch<Data>(url)
   
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("https://pokeapi.co/api/v2/pokemon/dtto");
-      
-      if (!response.ok) {
-        throw new Error("Error al obtener datos");
-      }
-      
-      const jsonData = await response.json();
-      setData(jsonData);
-    
-    } catch (error) {
-      setError(error as string);
-      console.error(error);
-    
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData()
-  }, [])
-
   if (loading) {
     return <div>Cargando...</div>
   }
 
   if(error){
-    return <div>AH ocurrido un error: {error}</div>
+    return <div>Ah ocurrido un error: {error.message}</div>
   }
   return (
     <div>
